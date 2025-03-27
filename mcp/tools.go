@@ -103,10 +103,56 @@ func (t Tool) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m)
 }
 
+// ToolInputSchema represents a JSON Schema (draft 2020-12) object for tool input validation
 type ToolInputSchema struct {
-	Type       string                 `json:"type"`
-	Properties map[string]interface{} `json:"properties"`
+	// Core schema fields
+	Type       string                 `json:"type,omitempty"`
+	Properties map[string]interface{} `json:"properties,omitempty"`
 	Required   []string               `json:"required,omitempty"`
+
+	// Schema metadata
+	Title       string        `json:"title,omitempty"`
+	Description string        `json:"description,omitempty"`
+	Default     interface{}   `json:"default,omitempty"`
+	Examples    []interface{} `json:"examples,omitempty"`
+
+	// Validation keywords
+	AllOf []ToolInputSchema `json:"allOf,omitempty"`
+	AnyOf []ToolInputSchema `json:"anyOf,omitempty"`
+	OneOf []ToolInputSchema `json:"oneOf,omitempty"`
+	Not   *ToolInputSchema  `json:"not,omitempty"`
+	If    *ToolInputSchema  `json:"if,omitempty"`
+	Then  *ToolInputSchema  `json:"then,omitempty"`
+	Else  *ToolInputSchema  `json:"else,omitempty"`
+
+	// Object-specific keywords
+	AdditionalProperties interface{}      `json:"additionalProperties,omitempty"`
+	PropertyNames        *ToolInputSchema `json:"propertyNames,omitempty"`
+	MinProperties        *int             `json:"minProperties,omitempty"`
+	MaxProperties        *int             `json:"maxProperties,omitempty"`
+
+	// Array-specific keywords
+	Items       interface{} `json:"items,omitempty"`
+	MinItems    *int        `json:"minItems,omitempty"`
+	MaxItems    *int        `json:"maxItems,omitempty"`
+	UniqueItems *bool       `json:"uniqueItems,omitempty"`
+
+	// String-specific keywords
+	MinLength *int   `json:"minLength,omitempty"`
+	MaxLength *int   `json:"maxLength,omitempty"`
+	Pattern   string `json:"pattern,omitempty"`
+	Format    string `json:"format,omitempty"`
+
+	// Number-specific keywords
+	MultipleOf       *float64 `json:"multipleOf,omitempty"`
+	Minimum          *float64 `json:"minimum,omitempty"`
+	Maximum          *float64 `json:"maximum,omitempty"`
+	ExclusiveMinimum *float64 `json:"exclusiveMinimum,omitempty"`
+	ExclusiveMaximum *float64 `json:"exclusiveMaximum,omitempty"`
+
+	// Schema composition
+	Ref         string                     `json:"$ref,omitempty"`
+	Definitions map[string]ToolInputSchema `json:"$defs,omitempty"`
 }
 
 // ToolOption is a function that configures a Tool.
